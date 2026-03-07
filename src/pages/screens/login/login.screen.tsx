@@ -38,9 +38,8 @@ export const LoginScreen: React.FC = () => {
         setLoading(true);
         try {
             const response = await login({ email, password });
-            const { accessToken, refreshToken } = response.data;
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            const user = response.data;
+            localStorage.setItem('user', JSON.stringify(user));
             navigate(ROUTES.HOME);
         } catch (err: unknown) {
             const axiosErr = err as { response?: { data?: { message?: string } } };
