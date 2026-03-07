@@ -49,3 +49,10 @@ export interface CreateOrderItemDto {
   quantity: number;
   unit_price: number;
 }
+
+export interface OrderStat {
+  total_orders: number;
+  total_revenue: number;
+  completed_orders: number;
+  cancelled_orders: number;
+}

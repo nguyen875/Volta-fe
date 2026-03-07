@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import type { CreateOrderResponse, Order, OrderRequestParam, RequestCreateOrderDto, RequestUpdateOrderDto } from "./order.interface";
+import type { CreateOrderResponse, Order, OrderRequestParam, OrderStat, RequestCreateOrderDto, RequestUpdateOrderDto } from "./order.interface";
 import type { PaginatedResponse, ApiResponse } from "../../common/interfaces/base-requestdto.interface";
 import axiosInstance from "../../common/configs/axios.config";
 import type { OrderStatus } from "./order.enum";
@@ -26,10 +26,10 @@ export const updateOrderStatus = (id: string, status: OrderStatus): Promise<Axio
     return axiosInstance.put(`${BASE_URL}/${id}/status`, { status });
 }
 
-export const deleteOrder = (id: string): Promise<AxiosResponse<ApiResponse<null>>> => {
+export const deleteOrder = (id: string): Promise<AxiosResponse<ApiResponse<void>>> => {
     return axiosInstance.delete(`${BASE_URL}/${id}`);
 }
 
-export const getOrderStats = (startDate: string, endDate: string): Promise<AxiosResponse<ApiResponse<any>>> => {
+export const getOrderStats = (startDate: string, endDate: string): Promise<AxiosResponse<ApiResponse<OrderStat>>> => {
     return axiosInstance.get(`${BASE_URL}/stats`, { params: { start_date: startDate, end_date: endDate } });
 }
