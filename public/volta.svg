@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 32" width="110" height="32">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800');
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@800');
       .box { fill: #0d0d0d; }
-      .v { fill: #e8ff47; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
-      .olta { fill: #ffffff; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+      .v { fill: #e8ff47; font-family: 'Roboto', sans-serif; font-weight: 800; font-size: 20px; }
+      .olta { fill: #ffffff; font-family: 'Roboto', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
     </style>
   </defs>
   <rect x="0" y="2" width="28" height="28" rx="4" class="box" />

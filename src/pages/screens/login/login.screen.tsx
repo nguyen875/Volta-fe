@@ -91,7 +91,7 @@ export const LoginScreen: React.FC = () => {
                 {/* Logo */}
                 <Typography
                     sx={{
-                        fontFamily: "'Syne', sans-serif",
+                        fontFamily: "'Roboto', sans-serif",
                         fontWeight: 800,
                         fontSize: 22,
                         letterSpacing: '-0.5px',
@@ -114,7 +114,7 @@ export const LoginScreen: React.FC = () => {
                     <Typography
                         component="h1"
                         sx={{
-                            fontFamily: "'Syne', sans-serif",
+                            fontFamily: "'Roboto', sans-serif",
                             fontSize: 'clamp(36px, 3.5vw, 52px)',
                             fontWeight: 800,
                             lineHeight: 1.05,
@@ -176,7 +176,7 @@ export const LoginScreen: React.FC = () => {
                     <Typography
                         component="h2"
                         sx={{
-                            fontFamily: "'Syne', sans-serif",
+                            fontFamily: "'Roboto', sans-serif",
                             fontSize: 32,
                             fontWeight: 800,
                             letterSpacing: '-1px',
@@ -237,7 +237,7 @@ export const LoginScreen: React.FC = () => {
                                     color: COLOR_BRAND.accent,
                                     borderRadius: 50,
                                     py: 1.75,
-                                    fontFamily: "'DM Sans', sans-serif",
+                                    fontFamily: "'Lato', sans-serif",
                                     fontSize: 15,
                                     fontWeight: 500,
                                     textTransform: 'none',
@@ -274,7 +274,7 @@ export const LoginScreen: React.FC = () => {
                             border: '1.5px solid #e0dfd8',
                             borderRadius: 50,
                             py: 1.5,
-                            fontFamily: "'DM Sans', sans-serif",
+                            fontFamily: "'Lato', sans-serif",
                             fontSize: 15,
                             fontWeight: 500,
                             textTransform: 'none',

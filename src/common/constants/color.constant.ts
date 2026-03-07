@@ -19,3 +19,14 @@ export const COLOR_BRAND = {
     accent: '#e8ff47',
     accent_dark: '#bcd400',
 };
+
+export const BUTTON_COLORS = {
+    primaryHover: '#1a1a1a',
+    secondaryHover: '#d4e63f',
+    ghostColor: '#e8e8e0',
+    ghostBorder: '#262626',
+    ghostHoverBg: '#1a1a1a',
+    ghostHoverBorder: '#3a3a3a',
+    dangerBg: '#ff4d4d',
+    dangerHoverBg: '#e63939',
+};

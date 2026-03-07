@@ -110,7 +110,7 @@ export const Sidebar: React.FC = () => {
                                     primaryTypographyProps={{
                                         fontSize: 14,
                                         fontWeight: isActive ? 600 : 400,
-                                        fontFamily: "'DM Sans', sans-serif",
+                                        fontFamily: "'Lato', sans-serif",
                                     }}
                                 />
                             )}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, ThemeProvider, CssBaseline } from '@mui/material';
+import { theme } from './theme';
 import { Sidebar } from './pages/sidebar/sidebar.part';
 import { RenderRoutes } from './routes/render.route';
 import { SnackbarProvider } from './common/contexts/snackbar.context';
@@ -8,24 +9,27 @@ import { ROUTES } from './routes/route.constant';
 
 function App() {
   return (
-    <SnackbarProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path={ROUTES.LOGIN} element={<LoginScreen />} />
-          <Route
-            path="*"
-            element={
-              <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                <Sidebar />
-                <Box component="main" sx={{ flexGrow: 1 }}>
-                  <RenderRoutes />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <SnackbarProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path={ROUTES.LOGIN} element={<LoginScreen />} />
+            <Route
+              path="*"
+              element={
+                <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+                  <Sidebar />
+                  <Box component="main" sx={{ flexGrow: 1 }}>
+                    <RenderRoutes />
+                  </Box>
                 </Box>
-              </Box>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </SnackbarProvider>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </SnackbarProvider>
+    </ThemeProvider>
   );
 }
 

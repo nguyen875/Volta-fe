@@ -55,7 +55,7 @@ export interface VTextFieldProps {
 const voltaSx: SxProps<Theme> = {
     '& .MuiOutlinedInput-root': {
         borderRadius: '12px',
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'Lato', sans-serif",
         '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: '#0d0d0d',
         },
@@ -65,7 +65,7 @@ const voltaSx: SxProps<Theme> = {
         },
     },
     '& .MuiInputLabel-root': {
-        fontFamily: "'Syne', sans-serif",
+        fontFamily: "'Roboto', sans-serif",
         fontWeight: 700,
         fontSize: '13px',
         '&.Mui-focused': {
