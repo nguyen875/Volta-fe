@@ -17,7 +17,7 @@ export interface VButtonProps {
     sx?: SxProps<Theme>;
 }
 
-const variantStyles: Record<VButtonVariant, any> = {
+const variantStyles: Record<VButtonVariant, SxProps<Theme>> = {
     primary: {
         bgcolor: COLOR_BRAND.dark,
         color: COLOR_BRAND.accent,
@@ -41,7 +41,7 @@ const variantStyles: Record<VButtonVariant, any> = {
     },
 };
 
-const sizeStyles: Record<string, any> = {
+const sizeStyles: Record<string, SxProps<Theme>> = {
     small: { px: 1.5, py: 0.625, fontSize: 12 },
     medium: { px: 2.25, py: 1.125, fontSize: 13 },
     large: { px: 3.5, py: 1.75, fontSize: 15 },
