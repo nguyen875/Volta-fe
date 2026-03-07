@@ -1,13 +1,13 @@
 import axios, { type AxiosResponse } from "axios";
-import type { RequestLoginDto, RequestSignUpDto, ResponseLoginDto } from "./auth.interface";
+import type { RequestLoginDto, RequestSignUpDto } from "./auth.interface";
 import type { User } from "../users/user.interface";
 
-export const login = (request: RequestLoginDto) => {
-    return axios.post<ResponseLoginDto>(`/login`, request);
+export const login = (request: RequestLoginDto): Promise<AxiosResponse<User>> => {
+    return axios.post(`/login`, request);
 }
 
-export const signUp = (request: RequestSignUpDto) => {
-    return axios.post<ResponseLoginDto>(`/register`, request);
+export const signUp = (request: RequestSignUpDto): Promise<AxiosResponse<User>> => {
+    return axios.post(`/register`, request);
 }
 
 export const logout = () => {

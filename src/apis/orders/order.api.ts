@@ -1,36 +1,35 @@
-import axios from "axios";
-import type { Order, RequestOrderDto, RequestUpdateOrderDto } from "./order.interface";
+import type { AxiosResponse } from "axios";
+import type { CreateOrderResponse, Order, OrderRequestParam, RequestCreateOrderDto, RequestUpdateOrderDto } from "./order.interface";
+import type { PaginatedResponse, ApiResponse } from "../../common/interfaces/base-requestdto.interface";
+import axiosInstance from "../../common/configs/axios.config";
+import type { OrderStatus } from "./order.enum";
 
-const BASE_URL = "orders";
+const BASE_URL = "/orders";
 
-export const getOrderById = (id: string) => {
-    return axios.get<Order>(`${BASE_URL}/${id}`);
-};
+export const getAllOrder = (params?: OrderRequestParam): Promise<AxiosResponse<PaginatedResponse<Order>>> => {
+    return axiosInstance.get(BASE_URL, { params });
+}
 
-export const getOrderList = (request: RequestOrderDto) => {
-    return axios.get<Order[]>(`${BASE_URL}`, { params: request });
-};
+export const createOrder = (body: RequestCreateOrderDto): Promise<AxiosResponse<ApiResponse<CreateOrderResponse>>> => {
+    return axiosInstance.post(BASE_URL, body);
+}
 
-export const getOrderListByOrderId = (orderId: string) => {
-    return axios.get<Order[]>(`${BASE_URL}/by-order/${orderId}`);
-};
+export const getOrderById = (id: string): Promise<AxiosResponse<ApiResponse<Order>>> => {
+    return axiosInstance.get(`${BASE_URL}/${id}`);
+}
 
-export const createOrder = (request: RequestOrderDto) => {
-    return axios.post<Order>(`${BASE_URL}`, request);
-};
+export const updateOrder = (id: string, body: RequestUpdateOrderDto): Promise<AxiosResponse<ApiResponse<Order>>> => {
+    return axiosInstance.put(`${BASE_URL}/${id}`, body);
+}
 
-export const createBulkOrder = (requests: RequestOrderDto[]) => {
-    return axios.post<Order[]>(`${BASE_URL}/bulk`, requests);
-};
+export const updateOrderStatus = (id: string, status: OrderStatus): Promise<AxiosResponse<ApiResponse<Order>>> => {
+    return axiosInstance.put(`${BASE_URL}/${id}/status`, { status });
+}
 
-export const updateOrder = (request: RequestUpdateOrderDto) => {
-    return axios.put<Order>(`${BASE_URL}`, request);
-};
+export const deleteOrder = (id: string): Promise<AxiosResponse<ApiResponse<null>>> => {
+    return axiosInstance.delete(`${BASE_URL}/${id}`);
+}
 
-export const deleteOrder = (id: string) => {
-    return axios.delete<Order>(`${BASE_URL}/${id}`);
-};
-
-export const deleteBulkOrder = (ids: string[]) => {
-    return axios.delete<Order[]>(`${BASE_URL}/bulk`, { data: ids })
-};
+export const getOrderStats = (startDate: string, endDate: string): Promise<AxiosResponse<ApiResponse<any>>> => {
+    return axiosInstance.get(`${BASE_URL}/stats`, { params: { start_date: startDate, end_date: endDate } });
+}

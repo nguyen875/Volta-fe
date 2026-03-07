@@ -1,28 +1,51 @@
-import type { BaseDto } from "../../common/interfaces/basedto.interface";
-import type { OrderItem } from "../order-items/order-item.interface";
-import type { BaseRequestDto } from "../../common/interfaces/base-requestdto.interface";
-import { OrderStatusEnum, OrderTypeEnum } from "./order.enum";
+import type { BaseRequestParam } from "../../common/interfaces/base-requestdto.interface";
+import type { OrderStatus } from "./order.enum";
 
-export interface Order extends BaseDto {
-    OrderCode: string 
-    TableId: string 
-    TotalAmount: number 
-    Status: OrderStatusEnum 
-    OrderType: OrderTypeEnum 
-    OrderItems: OrderItem[] 
-    Note: string 
+export interface Order {
+  id?: number;
+  user_id?: number;
+  address_id?: number;
+  status: OrderStatus;
+  total_price: number;
+  create_at?: string;
+  items?: OrderItem[];
 }
 
-export interface RequestCreateOrderDto
-{
-    OrderCode: string 
-    TableId: string 
-    Status: OrderStatusEnum 
-    OrderType: OrderTypeEnum 
+export interface RequestCreateOrderDto {
+  user_id: number;
+  address_id: number;
+  status: OrderStatus;
+  total_price: number;
 }
 
-export interface RequestUpdateOrderDto extends RequestCreateOrderDto {
-    id: string;
+export interface RequestUpdateOrderDto {
+  status?: OrderStatus;
+  address_id?: number;
+  total_price?: number;
 }
 
-export type RequestOrderDto = BaseRequestDto
+export interface OrderRequestParam extends BaseRequestParam {
+  status?: OrderStatus;
+}
+
+export interface CreateOrderResponse {
+  user_id: number;
+  address_id: number;
+  status: OrderStatus;
+  total_price: number;
+  items: CreateOrderItemDto[];
+}
+
+export interface OrderItem {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+}
+
+export interface CreateOrderItemDto {
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+}

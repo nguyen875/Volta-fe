@@ -9,12 +9,27 @@ export interface BaseRequestDto {
     skip?: number;
 }
 
-export interface PaginatedResponse<T> {
-    items: T[];
-    totalCount: number;
-    pageIndex: number;
-    pageSize: number;
-    totalPages: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+export interface ApiResponse<T> {
+    success: boolean;
+    message: string;
+    data: T;
+}
+
+export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+    meta?: {
+        page: number;
+        limit: number;
+        total: number;
+    };
+    pagination?: {
+        page: number;
+        limit: number;
+        total: number;
+    };
+}
+
+export interface BaseRequestParam {
+    search?: string;
+    page?: number;
+    limit?: number;
 }
