@@ -1,11 +1,10 @@
-import type { AxiosResponse } from "axios";
 import axiosInstance from "../../common/configs/axios.config";
-import type { PaginatedResponse } from "../../common/interfaces/base-requestdto.interface";
+import type { ApiResponse, PaginatedResponse } from "../../common/interfaces/base-requestdto.interface";
 import type { Bundle, BundleItem, BundleRequestParam, RequestCreateBundleDto } from "./bundle.interface";
 
 const BASE_URL = "/bundles";
 
-export const getAllBundles = (param: BundleRequestParam): Promise<AxiosResponse<PaginatedResponse<Bundle>>> => {
+export const getAllBundles = (param: BundleRequestParam): Promise<ApiResponse<PaginatedResponse<Bundle>>> => {
     return axiosInstance.get(BASE_URL, {
         params: {
             search: param.search || '',
@@ -15,34 +14,34 @@ export const getAllBundles = (param: BundleRequestParam): Promise<AxiosResponse<
     });
 }
 
-export const getActiveBundles = (): Promise<AxiosResponse<Bundle[]>> => {
+export const getActiveBundles = (): Promise<ApiResponse<Bundle[]>> => {
     return axiosInstance.get(`${BASE_URL}/active`);
 }
 
-export const getBundleById = (id: number): Promise<AxiosResponse<Bundle>> => {
+export const getBundleById = (id: number): Promise<ApiResponse<Bundle>> => {
     return axiosInstance.get(`${BASE_URL}/${id}`);
 }
 
-export const createBundle = (body: RequestCreateBundleDto): Promise<AxiosResponse<Bundle>> => {
+export const createBundle = (body: RequestCreateBundleDto): Promise<ApiResponse<Bundle>> => {
     return axiosInstance.post(BASE_URL, body);
 }
 
-export const updateBundle = (id: number, body: RequestCreateBundleDto): Promise<AxiosResponse<Bundle>> => {
+export const updateBundle = (id: number, body: RequestCreateBundleDto): Promise<ApiResponse<Bundle>> => {
     return axiosInstance.put(`${BASE_URL}/${id}`, body);
 }
 
-export const deleteBundle = (id: number): Promise<AxiosResponse<void>> => {
+export const deleteBundle = (id: number): Promise<ApiResponse<void>> => {
     return axiosInstance.delete(`${BASE_URL}/${id}`);
 }
 
-export const getBundleItems = (id: number): Promise<AxiosResponse<BundleItem[]>> => {
+export const getBundleItems = (id: number): Promise<ApiResponse<BundleItem[]>> => {
     return axiosInstance.get(`${BASE_URL}/${id}/items`);
 }
 
-export const addBundleItem = (id: number, body: { product_id: number }): Promise<AxiosResponse<BundleItem>> => {
+export const addBundleItem = (id: number, body: { product_id: number, quantity: number }): Promise<ApiResponse<void>> => {
     return axiosInstance.post(`${BASE_URL}/${id}/items`, body);
 }
 
-export const removeBundleItem = (id: number, itemId: number): Promise<AxiosResponse<void>> => {
+export const removeBundleItem = (id: number, itemId: number): Promise<ApiResponse<void>> => {
     return axiosInstance.delete(`${BASE_URL}/${id}/items/${itemId}`);
 }

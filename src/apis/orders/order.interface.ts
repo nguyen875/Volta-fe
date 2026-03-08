@@ -56,3 +56,11 @@ export interface OrderStat {
   completed_orders: number;
   cancelled_orders: number;
 }
+
+export interface CustomerOrder extends Omit<Order, 'items'> {
+  address_id: number;
+}
+
+export interface CustomerOrderDetail extends CustomerOrder {
+  items: OrderItem[];
+}

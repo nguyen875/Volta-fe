@@ -1,5 +1,4 @@
-import type { ApiResponse } from "../../common/interfaces/base-requestdto.interface";
-import type { BaseRequestParam } from "../../common/interfaces/base-requestdto.interface";
+import type { BaseRequestParam, PaginatedResponse } from "../../common/interfaces/base-requestdto.interface";
 import type { Product, ProductImage } from "../products/product.interface";
 
 export interface ShopRequestParam extends BaseRequestParam {
@@ -18,7 +17,7 @@ export interface ShopPaginationMeta {
     images?: Record<string, ProductImage>;
 }
 
-export interface ShopProductResponse extends ApiResponse<Product[]> {
+export interface ShopProductResponse extends PaginatedResponse<Product> {
     pagination: ShopPaginationMeta;
 }
 

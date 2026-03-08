@@ -4,6 +4,8 @@ import { AxiosError } from 'axios';
  * Backend error response structure - single error format
  */
 export interface BackendErrorResponse {
+    success?: boolean;
+    message?: string;
     error?: {
         code: string | null;
         message: string | null;
@@ -45,6 +47,11 @@ export const extractErrorMessage = (error: unknown): string | null => {
     if (isAxiosError(error)) {
         const axiosError = error as AxiosError<BackendErrorResponse>;
         const responseData = axiosError.response?.data;
+
+        // Handle { success: false, message: "..." } format
+        if (responseData?.message) {
+            return responseData.message;
+        }
 
         // Handle "errors" array format: { errors: [{ code, message }] }
         if (responseData?.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
