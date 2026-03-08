@@ -74,6 +74,18 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
         },
     });
 
+    const darkFieldSx = {
+        '& .MuiOutlinedInput-root': {
+            color: A.text,
+            bgcolor: A.bg,
+            '& fieldset': { borderColor: A.border },
+            '&:hover fieldset': { borderColor: A.border },
+            '&.Mui-focused fieldset': { borderColor: A.accent },
+        },
+        '& .MuiInputLabel-root': { color: A.dim },
+        '& .MuiInputLabel-root.Mui-focused': { color: A.text },
+    };
+
     return (
         <Modal open={open} onClose={onClose}>
             <Box
@@ -105,6 +117,7 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
                             value={formik.values.code}
                             onChange={(v) => formik.setFieldValue('code', String(v ?? '').toUpperCase())}
                             error={formik.touched.code ? formik.errors.code : undefined}
+                            sx={darkFieldSx}
                         />
 
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
@@ -115,6 +128,7 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
                                 options={TYPE_OPTIONS}
                                 value={formik.values.type}
                                 onChange={(v) => formik.setFieldValue('type', v)}
+                                sx={darkFieldSx}
                             />
                             <VTextField
                                 fieldType="number"
@@ -123,6 +137,7 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
                                 value={formik.values.value}
                                 onChange={(v) => formik.setFieldValue('value', v)}
                                 error={formik.touched.value ? formik.errors.value as string : undefined}
+                                sx={darkFieldSx}
                             />
                         </Box>
 
@@ -133,12 +148,14 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
                                 value={formik.values.min_order}
                                 onChange={(v) => formik.setFieldValue('min_order', v)}
                                 error={formik.touched.min_order ? formik.errors.min_order as string : undefined}
+                                sx={darkFieldSx}
                             />
                             <VTextField
                                 fieldType="number"
                                 label="Uses Remaining (blank = ∞)"
                                 value={formik.values.uses_remaining ?? ''}
                                 onChange={(v) => formik.setFieldValue('uses_remaining', v === '' ? null : v)}
+                                sx={darkFieldSx}
                             />
                         </Box>
 
@@ -147,6 +164,7 @@ const DiscountFormModal: React.FC<DiscountFormModalProps> = ({
                             label="Expires At (optional)"
                             value={formik.values.expires_at ?? ''}
                             onChange={(v) => formik.setFieldValue('expires_at', v === '' ? null : v)}
+                            sx={darkFieldSx}
                         />
 
                         <Divider sx={{ borderColor: A.border }} />
