@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://NguyenHoangNam-1410.github.io/Volta-fe/",
+  "homepage": "https://NguyenHoangNam-1410.github.io/volta/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

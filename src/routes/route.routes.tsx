@@ -1,5 +1,7 @@
-// import { ROUTES } from './route.constant';
+import { ROUTES } from './route.constant';
 import type { ReactNode } from 'react';
+
+import { AdminScreen } from '../pages/screens/admin/admin.screen';
 
 // Admin Screens (uncomment as implemented)
 // import { UserScreen } from '../pages/screens/users/user.screen';
@@ -22,6 +24,8 @@ export interface RouteConfig {
 }
 
 export const routes: RouteConfig[] = [
+    { path: ROUTES.ADMIN,       component: AdminScreen,      label: 'Admin'      },
+
     // ── Admin ──
     // { path: ROUTES.USERS,       component: UserScreen,       label: 'Users'      },
     // { path: ROUTES.PRODUCTS,    component: ProductScreen,    label: 'Products'   },

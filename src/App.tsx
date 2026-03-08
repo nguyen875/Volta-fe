@@ -5,6 +5,7 @@ import { Sidebar } from './pages/sidebar/sidebar.part';
 import { RenderRoutes } from './routes/render.route';
 import { SnackbarProvider } from './common/contexts/snackbar.context';
 import { LoginScreen } from './pages/screens/login/login.screen';
+import { AdminScreen } from './pages/screens/admin/admin.screen';
 import { ROUTES } from './routes/route.constant';
 
 function App() {
@@ -12,9 +13,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <SnackbarProvider>
-        <BrowserRouter basename="/volta-fe/">
+        <BrowserRouter basename="/volta/">
           <Routes>
             <Route path={ROUTES.LOGIN} element={<LoginScreen />} />
+            <Route path={ROUTES.ADMIN} element={<AdminScreen />} />
             <Route
               path="*"
               element={

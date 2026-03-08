@@ -49,7 +49,7 @@ export const Sidebar: React.FC = () => {
                 }}
             >
                 <img
-                    src={collapsed ? '/volta-mini.svg' : '/volta.svg'}
+                    src={collapsed ? `${import.meta.env.BASE_URL}volta-mini.svg` : `${import.meta.env.BASE_URL}volta.svg`}
                     alt="Volta Logo"
                     style={{
                         height: 32,

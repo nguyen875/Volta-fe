@@ -23,9 +23,10 @@ export const LoginScreen: React.FC = () => {
         }
         if (!password) {
             newErrors.password = 'Password is required';
-        } else if (password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
-        }
+        } 
+        // else if (password.length < 6) {
+        //     newErrors.password = 'Password must be at least 6 characters';
+        // }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -52,7 +53,7 @@ export const LoginScreen: React.FC = () => {
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, bgcolor: COLOR_BRAND.bg }}>
+        <Box sx={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, bgcolor: COLOR_BRAND.dark }}>
             {/* ── Left Brand Panel ── */}
             <Box
                 sx={{
@@ -179,14 +180,14 @@ export const LoginScreen: React.FC = () => {
                             fontSize: 32,
                             fontWeight: 800,
                             letterSpacing: '-1px',
-                            color: COLOR_BRAND.dark,
+                            color: '#fff',
                             mb: 1,
                         }}
                     >
                         Sign in
                     </Typography>
 
-                    <Typography sx={{ color: COLOR_BRAND.mid, fontSize: 15, mb: 4.5 }}>
+                    <Typography sx={{ color: COLOR_BRAND.light, fontSize: 15, mb: 4.5 }}>
                         Enter your credentials to access the dashboard.
                     </Typography>
 
@@ -269,8 +270,8 @@ export const LoginScreen: React.FC = () => {
                         onClick={() => navigate(ROUTES.HOME)}
                         sx={{
                             bgcolor: 'transparent',
-                            color: COLOR_BRAND.dark,
-                            border: '1.5px solid #e0dfd8',
+                            color: '#fff',
+                            border: '1.5px solid #444',
                             borderRadius: 50,
                             py: 1.5,
                             fontFamily: "'Lato', sans-serif",
@@ -278,8 +279,8 @@ export const LoginScreen: React.FC = () => {
                             fontWeight: 500,
                             textTransform: 'none',
                             '&:hover': {
-                                borderColor: COLOR_BRAND.dark,
-                                bgcolor: '#fff',
+                                borderColor: '#fff',
+                                bgcolor: 'rgba(255,255,255,0.08)',
                             },
                         }}
                     >
