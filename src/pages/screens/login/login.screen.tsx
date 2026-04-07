@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, CircularProgress, Divider, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Box, Button, CircularProgress, Divider, Typography } from '@mui/material';
 import { login } from '../../../apis/auths/auth.api';
-import { ROUTES } from '../../../routes/route.constant';
 import { VTextField } from '../../../common/components/VTextField';
 import { COLOR_BRAND } from '../../../common/constants/color.constant';
+import { handleApiError, handleApiSuccess } from '../../../common/utils/error-handler';
+import { useSnackbar } from '../../../common/contexts/snackbar.context';
+import { ROUTES } from '../../../routes/route.constant';
+import {
+    isAuthenticated,
+    setAuthenticatedSession,
+    setGuestSession,
+} from '../../../common/utils/auth-session';
+
+const PUBLIC_HOME_URL = '/volta/public';
 
 export const LoginScreen: React.FC = () => {
+    const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            window.location.replace(PUBLIC_HOME_URL);
+        }
+    }, []);
 
     const validate = (): boolean => {
         const newErrors: { email?: string; password?: string } = {};
@@ -33,23 +48,27 @@ export const LoginScreen: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setApiError('');
+        if (loading) return;
         if (!validate()) return;
 
         setLoading(true);
         try {
             const response = await login({ email, password });
             const user = response.data;
-            localStorage.setItem('user', JSON.stringify(user));
-            navigate(ROUTES.HOME);
+            setAuthenticatedSession(user);
+            handleApiSuccess(showSnackbar, 'Signed in successfully.');
+            window.location.assign(PUBLIC_HOME_URL);
         } catch (err: unknown) {
-            const axiosErr = err as { response?: { data?: { message?: string } } };
-            setApiError(
-                axiosErr.response?.data?.message || 'Login failed. Please check your credentials.'
-            );
+            handleApiError(err, showSnackbar, 'Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleContinueAsGuest = (): void => {
+        setGuestSession();
+        showSnackbar('You are browsing as a guest.', 'info');
+        window.location.assign(PUBLIC_HOME_URL);
     };
 
     return (
@@ -128,11 +147,11 @@ export const LoginScreen: React.FC = () => {
                             },
                         }}
                     >
-                        Manage your<br /><em>store,</em><br />effortlessly.
+                        Shop your <br /><em>dream,</em><br />effortlessly.
                     </Typography>
                     <Typography sx={{ color: COLOR_BRAND.mid, fontSize: 16, lineHeight: 1.6, maxWidth: 380 }}>
-                        A premium point-of-sale management platform.
-                        Streamline orders, tables, and team — all in one place.
+                        An e-commerce platform for your dream.
+                        All - in - one solution to think of.
                     </Typography>
                 </Box>
 
@@ -190,12 +209,6 @@ export const LoginScreen: React.FC = () => {
                     <Typography sx={{ color: COLOR_BRAND.light, fontSize: 15, mb: 4.5 }}>
                         Enter your credentials to access the dashboard.
                     </Typography>
-
-                    {apiError && (
-                        <Alert severity="error" sx={{ mb: 2.5, borderRadius: '12px' }}>
-                            {apiError}
-                        </Alert>
-                    )}
 
                     <form onSubmit={handleSubmit} noValidate>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
@@ -267,7 +280,29 @@ export const LoginScreen: React.FC = () => {
 
                     <Button
                         fullWidth
-                        onClick={() => navigate(ROUTES.HOME)}
+                        onClick={() => navigate(ROUTES.REGISTER)}
+                        sx={{
+                            bgcolor: 'transparent',
+                            color: COLOR_BRAND.accent,
+                            border: `1.5px solid ${COLOR_BRAND.accent}`,
+                            borderRadius: 50,
+                            py: 1.5,
+                            fontFamily: "'Lato', sans-serif",
+                            fontSize: 15,
+                            fontWeight: 500,
+                            textTransform: 'none',
+                            mb: 1.5,
+                            '&:hover': {
+                                bgcolor: 'rgba(232,255,71,0.08)',
+                            },
+                        }}
+                    >
+                        Register
+                    </Button>
+
+                    <Button
+                        fullWidth
+                        onClick={handleContinueAsGuest}
                         sx={{
                             bgcolor: 'transparent',
                             color: '#fff',

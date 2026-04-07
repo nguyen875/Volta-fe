@@ -5,6 +5,7 @@ import {
     MenuItem,
 } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material';
+import { COLOR_BRAND } from '../constants/color.constant';
 
 // ── Option type for dropdown / search-dropdown ──
 export interface VTextFieldOption {
@@ -56,11 +57,25 @@ const voltaSx: SxProps<Theme> = {
     '& .MuiOutlinedInput-root': {
         borderRadius: '12px',
         fontFamily: "'Lato', sans-serif",
+        color: COLOR_BRAND.light,
+        '& input': {
+            color: COLOR_BRAND.light,
+            '&::placeholder': {
+                color: COLOR_BRAND.mid,
+                opacity: 0.7,
+            },
+        },
+        '& textarea': {
+            color: COLOR_BRAND.light,
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: COLOR_BRAND.mid,
+        },
         '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#0d0d0d',
+            borderColor: COLOR_BRAND.light,
         },
         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#0d0d0d',
+            borderColor: COLOR_BRAND.accent,
             borderWidth: '1.5px',
         },
     },
@@ -68,9 +83,16 @@ const voltaSx: SxProps<Theme> = {
         fontFamily: "'Roboto', sans-serif",
         fontWeight: 700,
         fontSize: '13px',
+        color: COLOR_BRAND.light,
         '&.Mui-focused': {
-            color: '#0d0d0d',
+            color: COLOR_BRAND.accent,
         },
+        '&.Mui-error': {
+            color: '#ff4d4d',
+        },
+    },
+    '& .MuiFormHelperText-root': {
+        color: '#ff4d4d',
     },
 };
 
