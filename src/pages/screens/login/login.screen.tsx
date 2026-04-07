@@ -72,7 +72,7 @@ export const LoginScreen: React.FC = () => {
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, bgcolor: COLOR_BRAND.dark }}>
+        <Box sx={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, bgcolor: COLOR_BRAND.bg }}>
             {/* ── Left Brand Panel ── */}
             <Box
                 sx={{
@@ -199,7 +199,7 @@ export const LoginScreen: React.FC = () => {
                             fontSize: 32,
                             fontWeight: 800,
                             letterSpacing: '-1px',
-                            color: '#fff',
+                            color: COLOR_BRAND.dark,
                             mb: 1,
                         }}
                     >
@@ -305,8 +305,8 @@ export const LoginScreen: React.FC = () => {
                         onClick={handleContinueAsGuest}
                         sx={{
                             bgcolor: 'transparent',
-                            color: '#fff',
-                            border: '1.5px solid #444',
+                            color: COLOR_BRAND.dark,
+                            border: '1.5px solid #e0dfd8',
                             borderRadius: 50,
                             py: 1.5,
                             fontFamily: "'Lato', sans-serif",
@@ -314,8 +314,8 @@ export const LoginScreen: React.FC = () => {
                             fontWeight: 500,
                             textTransform: 'none',
                             '&:hover': {
-                                borderColor: '#fff',
-                                bgcolor: 'rgba(255,255,255,0.08)',
+                                borderColor: COLOR_BRAND.dark,
+                                bgcolor: '#fff',
                             },
                         }}
                     >

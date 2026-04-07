@@ -67,7 +67,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({ search }) => {
             limit: PAGE_SIZE,
             search,
             ...(statusFilter ? { status: statusFilter as OrderStatus } : {}),
-        }).then((r: any) => r.data),
+        }).then((r) => r.data),
     );
 
     const orders = ordersResp?.data ?? [];
@@ -161,9 +161,9 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({ search }) => {
 
             {/* Status stats */}
             <Box sx={{ display: 'flex', gap: 1.5, mb: 3, flexWrap: 'wrap' }}>
-                <StatCard label="Pending"   value={countByStatus(OrderStatus.PENDING)}   color={A.dim} />
-                <StatCard label="Paid"      value={countByStatus(OrderStatus.PAID)}      color={A.orange} />
-                <StatCard label="Shipped"   value={countByStatus(OrderStatus.SHIPPED)}   color={A.blue} />
+                <StatCard label="Pending" value={countByStatus(OrderStatus.PENDING)} color={A.dim} />
+                <StatCard label="Paid" value={countByStatus(OrderStatus.PAID)} color={A.orange} />
+                <StatCard label="Shipped" value={countByStatus(OrderStatus.SHIPPED)} color={A.blue} />
                 <StatCard label="Delivered" value={countByStatus(OrderStatus.DELIVERED)} color={A.green} />
                 <StatCard label="Cancelled" value={countByStatus(OrderStatus.CANCELLED)} color={A.red} />
             </Box>

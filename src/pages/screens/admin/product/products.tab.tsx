@@ -21,10 +21,10 @@ interface ProductsTabProps {
 }
 
 const BADGE_COLORS: Record<string, { bg: string; text: string }> = {
-    [ProductBadge.HOT]:  { bg: 'rgba(255,77,77,0.15)',   text: '#ff4d4d' },
-    [ProductBadge.NEW]:  { bg: 'rgba(77,166,255,0.15)',  text: '#4da6ff' },
-    [ProductBadge.SALE]: { bg: 'rgba(255,170,77,0.15)',  text: '#ffaa4d' },
-    [ProductBadge.NONE]: { bg: 'rgba(136,136,136,0.1)',  text: '#888' },
+    [ProductBadge.HOT]: { bg: 'rgba(255,77,77,0.15)', text: '#ff4d4d' },
+    [ProductBadge.NEW]: { bg: 'rgba(77,166,255,0.15)', text: '#4da6ff' },
+    [ProductBadge.SALE]: { bg: 'rgba(255,170,77,0.15)', text: '#ffaa4d' },
+    [ProductBadge.NONE]: { bg: 'rgba(136,136,136,0.1)', text: '#888' },
 };
 
 const PAGE_SIZE = 10;
@@ -41,12 +41,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ search }) => {
 
     const { data: productsResp, mutate } = useSWR<PaginatedResponse<Product>>(
         swrKey,
-        () => getAllProduct({ page, limit: PAGE_SIZE, search }).then((r: any) => r.data),
+        () => getAllProduct({ page, limit: PAGE_SIZE, search }).then((r) => r.data),
     );
 
     const { data: categoriesResp } = useSWR<Category[]>(
         'categories',
-        () => getAllCategories().then((r: any) => r.data?.data ?? r.data),
+        () => getAllCategories().then((r) => (r.data as unknown as { data: Category[] }).data ?? r.data),
     );
 
     const products = productsResp?.data ?? [];
