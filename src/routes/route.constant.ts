@@ -1,6 +1,7 @@
 export const ROUTES = {
     HOME: '/',
     LOGIN: '/login',
+    REGISTER: '/register',
     ADMIN: '/admin',
 
     // Admin
@@ -20,6 +21,7 @@ export const ROUTES = {
 export const ROUTE_LABELS = {
     [ROUTES.HOME]: 'Home',
     [ROUTES.LOGIN]: 'Login',
+    [ROUTES.REGISTER]: 'Register',
     [ROUTES.ADMIN]: 'Admin',
 
     // Admin

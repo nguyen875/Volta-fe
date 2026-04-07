@@ -2,6 +2,7 @@ import { ROUTES } from './route.constant';
 import type { ReactNode } from 'react';
 
 import { AdminScreen } from '../pages/screens/admin/admin.screen';
+import { HomeScreen } from '../pages/screens/public/home.screen';
 
 // Admin Screens (uncomment as implemented)
 // import { UserScreen } from '../pages/screens/users/user.screen';
@@ -21,10 +22,12 @@ export interface RouteConfig {
     component: React.ComponentType;
     label: string;
     icon?: ReactNode;
+    requiresAuth?: boolean;
 }
 
 export const routes: RouteConfig[] = [
-    { path: ROUTES.ADMIN,       component: AdminScreen,      label: 'Admin'      },
+    { path: ROUTES.HOME, component: HomeScreen, label: 'Home' },
+    { path: ROUTES.ADMIN, component: AdminScreen, label: 'Admin' },
 
     // ── Admin ──
     // { path: ROUTES.USERS,       component: UserScreen,       label: 'Users'      },
