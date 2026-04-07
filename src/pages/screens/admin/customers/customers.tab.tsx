@@ -24,7 +24,7 @@ export const CustomersTab: React.FC<CustomersTabProps> = ({ search }) => {
 
     const { data: usersResp } = useSWR<PaginatedResponse<User>>(
         swrKey,
-        () => getAllUser({ page, limit: PAGE_SIZE, search }).then((r: any) => r.data),
+        () => getAllUser({ page, limit: PAGE_SIZE, search }).then((r) => r.data),
     );
 
     const users = usersResp?.data ?? [];

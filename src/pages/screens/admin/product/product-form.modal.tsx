@@ -64,15 +64,16 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
     });
 
     // Auto-generate slug from name
+    const { values, setFieldValue } = formik;
     useEffect(() => {
         if (!isEdit) {
-            const slug = formik.values.name
+            const slug = values.name
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/(^-|-$)/g, '');
-            formik.setFieldValue('slug', slug);
+            setFieldValue('slug', slug);
         }
-    }, [formik.values.name, isEdit]);
+    }, [values.name, isEdit, setFieldValue]);
 
     const categoryOptions = categories.map((c) => ({ label: c.name, value: c.id }));
 

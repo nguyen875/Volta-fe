@@ -101,17 +101,17 @@ export const DashboardTab: React.FC = () => {
 
     const { data: statsResp } = useSWR(
         ['order-stats', startDate, endDate],
-        () => getOrderStats(startDate, endDate).then((r: any) => r.data?.data),
+        () => getOrderStats(startDate, endDate).then((r) => r.data?.data),
     );
 
     const { data: ordersResp } = useSWR<PaginatedResponse<Order>>(
         ['orders', 1, 5, ''],
-        () => getAllOrder({ page: 1, limit: 5 }).then((r: any) => r.data),
+        () => getAllOrder({ page: 1, limit: 5 }).then((r) => r.data),
     );
 
     const { data: productsResp } = useSWR<PaginatedResponse<Product>>(
         ['products', 1, 5, ''],
-        () => getAllProduct({ page: 1, limit: 5 }).then((r: any) => r.data),
+        () => getAllProduct({ page: 1, limit: 5 }).then((r) => r.data),
     );
 
     const recentOrders = ordersResp?.data ?? [];
@@ -134,12 +134,14 @@ export const DashboardTab: React.FC = () => {
     ];
 
     const productColumns: VTableColumn<Product>[] = [
-        { key: 'name', label: 'Product', render: (r) => (
-            <Box>
-                <Typography sx={{ fontSize: 13, fontWeight: 500, color: A.text }}>{r.name}</Typography>
-                <Typography sx={{ fontSize: 11, color: A.dim, fontFamily: 'monospace' }}>{r.slug}</Typography>
-            </Box>
-        )},
+        {
+            key: 'name', label: 'Product', render: (r) => (
+                <Box>
+                    <Typography sx={{ fontSize: 13, fontWeight: 500, color: A.text }}>{r.name}</Typography>
+                    <Typography sx={{ fontSize: 11, color: A.dim, fontFamily: 'monospace' }}>{r.slug}</Typography>
+                </Box>
+            )
+        },
         { key: 'price', label: 'Price', render: (r) => <Typography sx={{ fontFamily: 'monospace', fontSize: 13, color: A.text }}>${Number(r.price).toFixed(2)}</Typography> },
         { key: 'stock', label: 'Stock', render: (r) => <Typography sx={{ fontSize: 13, color: r.stock < 10 ? A.red : A.green }}>{r.stock}</Typography> },
     ];

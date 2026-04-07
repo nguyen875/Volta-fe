@@ -192,7 +192,7 @@ export const DiscountsTab: React.FC = () => {
 
     const { data: discountsResp, mutate } = useSWR<Discount[]>(
         'discounts',
-        () => getAllDiscounts().then((r: any) => r.data?.data ?? r.data),
+        () => getAllDiscounts().then((r) => (r.data as unknown as { data: Discount[] }).data ?? r.data),
     );
 
     const discounts = discountsResp ?? [];
