@@ -6,7 +6,7 @@ export const ROUTES = {
 
     // Customer
     SHOP: '/shop',
-    PRODUCT_DETAIL: '/shop/:slug',
+    PRODUCT_DETAIL: '/shop/:id',
     CART: '/cart',
     CHECKOUT: '/checkout',
     ORDER_SUCCESS: '/order-success',

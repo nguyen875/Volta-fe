@@ -8,7 +8,7 @@ import {
     Chip,
     CircularProgress,
 } from '@mui/material';
-import { getShopProductBySlug } from '../../../../apis/shops/shop.api';
+import { getShopProductById } from '../../../../apis/shops/shop.api';
 import { getProductRelations } from '../../../../apis/products/product.api';
 import type { ProductDetail } from '../../../../apis/shops/shop.interface';
 import type { Product } from '../../../../apis/products/product.interface';
@@ -26,20 +26,26 @@ const badgeVisual: Record<string, { text: string; bg: string }> = {
 };
 
 export const ProductDetailScreen: React.FC = () => {
-    const { slug } = useParams<{ slug: string }>();
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [qty, setQty] = useState(1);
     const [selectedImage, setSelectedImage] = useState(0);
 
     const { data: detail, isLoading } = useSWR<ProductDetail | null>(
-        slug ? ['product-detail', slug] : null,
-        () => getShopProductBySlug(slug!).then((r) => r.data?.[0] ?? null),
+        id ? ['product-detail', id] : null,
+        () => getShopProductById(id!).then((r) => (r as { data?: { data?: ProductDetail } | ProductDetail })?.data && 'data' in ((r as { data?: unknown }).data as object)
+            ? ((r as { data?: { data?: ProductDetail } }).data?.data ?? null)
+            : ((r as { data?: ProductDetail }).data ?? null)),
     );
 
+    const relationProductId = detail?.product?.id;
+
     const { data: relatedProducts } = useSWR<Product[]>(
-        slug ? ['product-relations', slug] : null,
-        () => getProductRelations(slug!, ProductRelationType.CROSSSELL).then((r) => r.data),
+        relationProductId ? ['product-relations', relationProductId] : null,
+        () => getProductRelations(String(relationProductId), ProductRelationType.CROSSSELL).then((r) => (r as { data?: { data?: Product[] } | Product[] })?.data && 'data' in ((r as { data?: unknown }).data as object)
+            ? ((r as { data?: { data?: Product[] } }).data?.data ?? [])
+            : ((r as { data?: Product[] }).data ?? [])),
     );
 
     const handleAddToCart = async () => {
@@ -283,7 +289,7 @@ export const ProductDetailScreen: React.FC = () => {
                             {(relatedProducts ?? []).map((rp) => (
                                 <Box
                                     key={rp.id}
-                                    onClick={() => navigate(`/shop/${rp.slug}`)}
+                                    onClick={() => navigate(`/shop/${rp.id}`)}
                                     sx={{
                                         borderRadius: '16px',
                                         border: '1px solid #f0f0f0',

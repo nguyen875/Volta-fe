@@ -15,8 +15,8 @@ export const getShops = (params: ShopRequestParam): Promise<ApiResponse<ShopProd
     });
 }
 
-export const getShopProductBySlug = (slug: string): Promise<ApiResponse<ProductDetail[]>> => {
-    return axiosInstance.get(`/shop/products/${slug}`);
+export const getShopProductById = (id: string): Promise<ApiResponse<ProductDetail>> => {
+    return axiosInstance.get(`/shop/products/${id}`);
 }
 
 export const getShopCategories = (): Promise<ApiResponse<Category[]>> => {
