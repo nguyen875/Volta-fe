@@ -114,7 +114,7 @@ function HomeProductCard({ product, onNavigate, onAddToCart }: { product: Produc
     );
 }
 
-function BundleCard({ bundle }: { bundle: Bundle }) {
+function BundleCard({ bundle, onAddToCart }: { bundle: Bundle; onAddToCart: () => void }) {
     return (
         <Box
             sx={{
@@ -136,9 +136,19 @@ function BundleCard({ bundle }: { bundle: Bundle }) {
                     {bundle.description || 'Curated bundle for best value.'}
                 </Typography>
             </Box>
-            <Typography sx={{ mt: 1.5, color: COLOR_BRAND.accent, fontWeight: 800, fontSize: 22 }}>
-                ${Number(bundle.bundle_price).toFixed(2)}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
+                <Typography sx={{ color: COLOR_BRAND.accent, fontWeight: 800, fontSize: 22 }}>
+                    ${Number(bundle.bundle_price).toFixed(2)}
+                </Typography>
+                <VButton
+                    variant="secondary"
+                    size="small"
+                    onClick={onAddToCart}
+                    sx={{ borderRadius: '8px', fontSize: 12 }}
+                >
+                    Add
+                </VButton>
+            </Box>
         </Box>
     );
 }
@@ -212,6 +222,15 @@ export const HomeScreen: React.FC = () => {
             return;
         }
         await addToCart({ product_id: product.id, quantity: 1 });
+    };
+
+    const handleAddBundleToCart = async (bundle: Bundle) => {
+        if (!isAuthenticated()) {
+            navigate('/login');
+            return;
+        }
+        // Add bundle as a cart item using the bundle ID as product_id
+        await addToCart({ product_id: bundle.id, quantity: 1 });
     };
 
     return (
@@ -352,7 +371,11 @@ export const HomeScreen: React.FC = () => {
                     ) : (bundles ?? []).length > 0 ? (
                         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', xl: 'repeat(3, 1fr)' }, gap: 2 }}>
                             {(bundles ?? []).map((bundle) => (
-                                <BundleCard key={`bundle-${bundle.id}`} bundle={bundle} />
+                                <BundleCard 
+                                    key={`bundle-${bundle.id}`} 
+                                    bundle={bundle}
+                                    onAddToCart={() => handleAddBundleToCart(bundle)}
+                                />
                             ))}
                         </Box>
                     ) : (
