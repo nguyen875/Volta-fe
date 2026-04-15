@@ -96,7 +96,7 @@ export const CartScreen: React.FC = () => {
 
                                     <Box sx={{ flex: 1 }}>
                                         <Typography
-                                            onClick={() => navigate(`/shop/${item.product_id}`)}
+                                            onClick={() => navigate(`/shop/${item.product_slug}`)}
                                             sx={{ fontWeight: 600, fontSize: 14, cursor: 'pointer', color: '#1a1a1a', '&:hover': { textDecoration: 'underline' } }}
                                         >
                                             {item.product_name}

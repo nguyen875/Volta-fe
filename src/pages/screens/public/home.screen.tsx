@@ -294,7 +294,7 @@ export const HomeScreen: React.FC = () => {
                                 <HomeProductCard
                                     key={`search-${product.id}`}
                                     product={product}
-                                    onNavigate={() => navigate(`/shop/${product.id}`)}
+                                    onNavigate={() => navigate(`/shop/${product.slug}`)}
                                     onAddToCart={() => handleAddToCart(product)}
                                 />
                             ))}
@@ -325,7 +325,7 @@ export const HomeScreen: React.FC = () => {
                                     <HomeProductCard
                                         key={`${badge}-${product.id}`}
                                         product={product}
-                                        onNavigate={() => navigate(`/shop/${product.id}`)}
+                                        onNavigate={() => navigate(`/shop/${product.slug}`)}
                                         onAddToCart={() => handleAddToCart(product)}
                                     />
                                 ))}
@@ -367,7 +367,7 @@ export const HomeScreen: React.FC = () => {
                                 <HomeProductCard
                                     key={`available-${product.id}`}
                                     product={product}
-                                    onNavigate={() => navigate(`/shop/${product.id}`)}
+                                    onNavigate={() => navigate(`/shop/${product.slug}`)}
                                     onAddToCart={() => handleAddToCart(product)}
                                 />
                             ))}

@@ -25,6 +25,8 @@ export const CheckoutScreen: React.FC = () => {
     const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
     const [discountCode, setDiscountCode] = useState('');
     const [discountResult, setDiscountResult] = useState<{ discount_amount: number; total: number } | null>(null);
+    const [deliveryTier, setDeliveryTier] = useState<'standard' | 'express'>('standard');
+    const [paymentMethod, setPaymentMethod] = useState<'cod' | 'credit_card'>('cod');
     const [placing, setPlacing] = useState(false);
     const [applyingDiscount, setApplyingDiscount] = useState(false);
 
@@ -62,7 +64,12 @@ export const CheckoutScreen: React.FC = () => {
         }
         setPlacing(true);
         try {
-            const res = await placeOrder({ address_id: selectedAddress, discount_code: discountCode });
+            const res = await placeOrder({
+                address_id: selectedAddress,
+                discount_code: discountCode || undefined,
+                payment_method: paymentMethod,
+                delivery_tier: deliveryTier,
+            });
             await refreshCart();
             navigate('/order-success', { state: { orderId: res.data } });
         } catch {
@@ -89,7 +96,9 @@ export const CheckoutScreen: React.FC = () => {
         );
     }
 
-    const finalTotal = discountResult?.total ?? checkoutData.subtotal;
+    const shippingFee = deliveryTier === 'express' ? 15 : 0;
+    const baseTotal = discountResult?.total ?? checkoutData.subtotal;
+    const finalTotal = baseTotal + shippingFee;
 
     return (
         <Box sx={{ bgcolor: '#ffffff' }}>
@@ -154,6 +163,94 @@ export const CheckoutScreen: React.FC = () => {
                                         />
                                     ))}
                                 </RadioGroup>
+                            )}
+                        </Box>
+
+                        {/* Delivery Options */}
+                        <Box sx={{ borderTop: '1px solid #f0f0f0', pt: 3, mb: 3 }}>
+                            <Typography sx={{ fontWeight: 700, fontSize: 16, mb: 2, color: '#1a1a1a' }}>
+                                Delivery Options
+                            </Typography>
+                            <RadioGroup
+                                value={deliveryTier}
+                                onChange={(e) => setDeliveryTier(e.target.value as 'standard' | 'express')}
+                            >
+                                {[
+                                    { value: 'standard', label: 'Standard Delivery', sub: '5–7 business days', fee: 'Free' },
+                                    { value: 'express', label: 'Express Delivery', sub: '1–2 business days', fee: '+$15.00' },
+                                ].map((opt) => (
+                                    <FormControlLabel
+                                        key={opt.value}
+                                        value={opt.value}
+                                        control={<Radio sx={{ color: '#ccc', '&.Mui-checked': { color: '#1a1a1a' } }} />}
+                                        label={
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                                <Box>
+                                                    <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>{opt.label}</Typography>
+                                                    <Typography sx={{ fontSize: 12, color: '#888' }}>{opt.sub}</Typography>
+                                                </Box>
+                                                <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#1a1a1a' }}>{opt.fee}</Typography>
+                                            </Box>
+                                        }
+                                        sx={{
+                                            mb: 1, px: 2, py: 1.5, borderRadius: '12px', mx: 0, width: '100%',
+                                            border: deliveryTier === opt.value ? '2px solid #1a1a1a' : '1px solid #f0f0f0',
+                                            bgcolor: deliveryTier === opt.value ? '#fafafa' : 'transparent',
+                                            transition: 'all 0.15s',
+                                        }}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </Box>
+
+                        {/* Payment Method */}
+                        <Box sx={{ borderTop: '1px solid #f0f0f0', pt: 3 }}>
+                            <Typography sx={{ fontWeight: 700, fontSize: 16, mb: 2, color: '#1a1a1a' }}>
+                                Payment Method
+                            </Typography>
+                            <RadioGroup
+                                value={paymentMethod}
+                                onChange={(e) => setPaymentMethod(e.target.value as 'cod' | 'credit_card')}
+                            >
+                                {[
+                                    { value: 'cod', label: 'Cash on Delivery', sub: 'Pay when your order arrives' },
+                                    { value: 'credit_card', label: 'Credit Card', sub: 'Simulated — no real charge' },
+                                ].map((opt) => (
+                                    <FormControlLabel
+                                        key={opt.value}
+                                        value={opt.value}
+                                        control={<Radio sx={{ color: '#ccc', '&.Mui-checked': { color: '#1a1a1a' } }} />}
+                                        label={
+                                            <Box>
+                                                <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>{opt.label}</Typography>
+                                                <Typography sx={{ fontSize: 12, color: '#888' }}>{opt.sub}</Typography>
+                                            </Box>
+                                        }
+                                        sx={{
+                                            mb: 1, px: 2, py: 1.5, borderRadius: '12px', mx: 0, width: '100%',
+                                            border: paymentMethod === opt.value ? '2px solid #1a1a1a' : '1px solid #f0f0f0',
+                                            bgcolor: paymentMethod === opt.value ? '#fafafa' : 'transparent',
+                                            transition: 'all 0.15s',
+                                        }}
+                                    />
+                                ))}
+                            </RadioGroup>
+
+                            {/* Credit card mock form */}
+                            {paymentMethod === 'credit_card' && (
+                                <Box sx={{ mt: 2, p: 2.5, border: '1px solid #f0f0f0', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                    <TextField placeholder="Card number" size="small" disabled value="**** **** **** 4242"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} />
+                                    <Box sx={{ display: 'flex', gap: 1 }}>
+                                        <TextField placeholder="MM/YY" size="small" disabled value="12/28"
+                                            sx={{ flex: 1, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} />
+                                        <TextField placeholder="CVV" size="small" disabled value="***"
+                                            sx={{ flex: 1, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }} />
+                                    </Box>
+                                    <Typography sx={{ fontSize: 11, color: '#aaa', textAlign: 'center' }}>
+                                        This is a simulated payment — no real transaction will occur.
+                                    </Typography>
+                                </Box>
                             )}
                         </Box>
 
@@ -232,6 +329,12 @@ export const CheckoutScreen: React.FC = () => {
                                     </Typography>
                                 </Box>
                             )}
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                <Typography sx={{ color: '#666', fontSize: 14 }}>Shipping</Typography>
+                                <Typography sx={{ fontWeight: 600, fontSize: 14, color: shippingFee === 0 ? '#2e7d32' : '#1a1a1a' }}>
+                                    {shippingFee === 0 ? 'Free' : `+$${shippingFee.toFixed(2)}`}
+                                </Typography>
+                            </Box>
                         </Box>
 
                         <Box sx={{ borderTop: '1px solid #e8e8e8', mt: 2, pt: 2, display: 'flex', justifyContent: 'space-between', mb: 3 }}>

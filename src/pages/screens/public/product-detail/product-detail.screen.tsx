@@ -8,7 +8,7 @@ import {
     Chip,
     CircularProgress,
 } from '@mui/material';
-import { getShopProductById } from '../../../../apis/shops/shop.api';
+import { getShopProductBySlug } from '../../../../apis/shops/shop.api';
 import { getProductRelations } from '../../../../apis/products/product.api';
 import type { ProductDetail } from '../../../../apis/shops/shop.interface';
 import type { Product } from '../../../../apis/products/product.interface';
@@ -34,7 +34,7 @@ export const ProductDetailScreen: React.FC = () => {
 
     const { data: detail, isLoading } = useSWR<ProductDetail | null>(
         slug ? ['product-detail', slug] : null,
-        () => getShopProductById(Number(slug)).then((r) => r.data?.[0] ?? null),
+        () => getShopProductBySlug(slug!).then((r) => r.data?.[0] ?? null),
     );
 
     const { data: relatedProducts } = useSWR<Product[]>(
@@ -283,7 +283,7 @@ export const ProductDetailScreen: React.FC = () => {
                             {(relatedProducts ?? []).map((rp) => (
                                 <Box
                                     key={rp.id}
-                                    onClick={() => navigate(`/shop/${rp.id}`)}
+                                    onClick={() => navigate(`/shop/${rp.slug}`)}
                                     sx={{
                                         borderRadius: '16px',
                                         border: '1px solid #f0f0f0',

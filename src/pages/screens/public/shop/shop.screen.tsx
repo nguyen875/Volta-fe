@@ -237,7 +237,7 @@ export const ShopScreen: React.FC = () => {
                                                 }}
                                             >
                                                 <Box
-                                                    onClick={() => navigate(`/shop/${product.id}`)}
+                                                    onClick={() => navigate(`/shop/${product.slug}`)}
                                                     sx={{
                                                         height: 180,
                                                         bgcolor: '#fafafa',
@@ -267,7 +267,7 @@ export const ShopScreen: React.FC = () => {
                                                         />
                                                     )}
                                                     <Typography
-                                                        onClick={() => navigate(`/shop/${product.id}`)}
+                                                        onClick={() => navigate(`/shop/${product.slug}`)}
                                                         sx={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', mb: 0.5, cursor: 'pointer' }}
                                                     >
                                                         {product.name}
