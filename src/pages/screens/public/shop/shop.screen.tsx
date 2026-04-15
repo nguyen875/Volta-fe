@@ -221,21 +221,41 @@ export const ShopScreen: React.FC = () => {
                                 >
                                     {sorted.map((product) => {
                                         const style = badgeVisual[product.badge] ?? badgeVisual.none;
+                                        const hasBadge = product.badge !== 'none';
                                         return (
                                             <Box
                                                 key={product.id}
                                                 sx={{
                                                     bgcolor: '#ffffff',
                                                     borderRadius: '16px',
-                                                    border: '1px solid #f0f0f0',
+                                                    border: hasBadge ? `2px solid ${style.text}` : '1px solid #f0f0f0',
                                                     overflow: 'hidden',
-                                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                                    position: 'relative',
+                                                    transition: 'transform 0.2s, box-shadow 0.2s, border 0.2s',
+                                                    boxShadow: hasBadge ? `0 0 0 1px ${style.bg}` : 'none',
                                                     '&:hover': {
                                                         transform: 'translateY(-4px)',
-                                                        boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+                                                        boxShadow: hasBadge ? `0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px ${style.bg}` : '0 8px 24px rgba(0,0,0,0.06)',
                                                     },
                                                 }}
                                             >
+                                                {hasBadge && (
+                                                    <Chip
+                                                        label={product.badge.toUpperCase()}
+                                                        size="small"
+                                                        sx={{
+                                                            bgcolor: style.bg,
+                                                            color: style.text,
+                                                            fontSize: 10,
+                                                            fontWeight: 700,
+                                                            height: 24,
+                                                            position: 'absolute',
+                                                            top: 8,
+                                                            right: 8,
+                                                            zIndex: 10,
+                                                        }}
+                                                    />
+                                                )}
                                                 <Box
                                                     onClick={() => navigate(`/shop/${product.id}`)}
                                                     sx={{
@@ -252,20 +272,6 @@ export const ShopScreen: React.FC = () => {
                                                     </Typography>
                                                 </Box>
                                                 <Box sx={{ p: 2 }}>
-                                                    {product.badge !== 'none' && (
-                                                        <Chip
-                                                            label={product.badge.toUpperCase()}
-                                                            size="small"
-                                                            sx={{
-                                                                bgcolor: style.bg,
-                                                                color: style.text,
-                                                                fontSize: 10,
-                                                                fontWeight: 700,
-                                                                mb: 1,
-                                                                height: 22,
-                                                            }}
-                                                        />
-                                                    )}
                                                     <Typography
                                                         onClick={() => navigate(`/shop/${product.id}`)}
                                                         sx={{ fontWeight: 600, fontSize: 14, color: '#1a1a1a', mb: 0.5, cursor: 'pointer' }}
