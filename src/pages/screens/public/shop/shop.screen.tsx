@@ -27,6 +27,14 @@ const badgeVisual: Record<string, { text: string; bg: string }> = {
     none: { text: '#888', bg: '#f5f5f5' },
 };
 
+const resolveProductImageUrl = (imageUrl?: string): string => {
+    if (!imageUrl) return '';
+    if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+    const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
+    const origin = apiUrl ? new URL(apiUrl, window.location.origin).origin : window.location.origin;
+    return `${origin}${imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`}`;
+};
+
 export const ShopScreen: React.FC = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
@@ -38,7 +46,7 @@ export const ShopScreen: React.FC = () => {
 
     const { data: categories } = useSWR<Category[]>(
         'shop-categories',
-        () => getShopCategories().then((r) => r.data),
+        () => getShopCategories().then((r) => (r as unknown as { data: { data: Category[] } }).data.data),
     );
 
     const { data: shopRes, isLoading } = useSWR(
@@ -222,6 +230,7 @@ export const ShopScreen: React.FC = () => {
                                     {sorted.map((product) => {
                                         const style = badgeVisual[product.badge] ?? badgeVisual.none;
                                         const hasBadge = product.badge !== 'none';
+                                        const imageSrc = resolveProductImageUrl(product.image_url);
                                         return (
                                             <Box
                                                 key={product.id}
@@ -265,11 +274,24 @@ export const ShopScreen: React.FC = () => {
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
                                                         cursor: 'pointer',
+                                                        overflow: 'hidden',
                                                     }}
                                                 >
-                                                    <Typography sx={{ color: '#ccc', fontSize: 13 }}>
-                                                        {product.name}
-                                                    </Typography>
+                                                    {imageSrc ? (
+                                                        <Box
+                                                            component="img"
+                                                            src={imageSrc}
+                                                            alt={product.name}
+                                                            sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <Typography sx={{ color: '#ccc', fontSize: 13 }}>
+                                                            {product.name}
+                                                        </Typography>
+                                                    )}
                                                 </Box>
                                                 <Box sx={{ p: 2 }}>
                                                     <Typography

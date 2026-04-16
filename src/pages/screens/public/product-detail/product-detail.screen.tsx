@@ -148,7 +148,7 @@ export const ProductDetailScreen: React.FC = () => {
 
                     {/* Info */}
                     <Box sx={{ flex: 1 }}>
-                        {product.badge !== 'none' && (
+                        {product.badge && product.badge !== 'none' && (
                             <Chip
                                 label={product.badge.toUpperCase()}
                                 size="small"
@@ -288,7 +288,7 @@ export const ProductDetailScreen: React.FC = () => {
                         >
                             {(relatedProducts ?? []).map((rp) => {
                                 const rpStyle = badgeVisual[rp.badge] ?? badgeVisual.none;
-                                const rpHasBadge = rp.badge !== 'none';
+                                const rpHasBadge = rp.badge && rp.badge !== 'none';
                                 return (
                                     <Box
                                         key={rp.id}
@@ -330,7 +330,7 @@ export const ProductDetailScreen: React.FC = () => {
                                             {rp.name}
                                         </Typography>
                                         <Typography sx={{ fontWeight: 700, fontSize: 18, color: '#1a1a1a' }}>
-                                            ${Number(rp.price).toFixed(2)}
+                                            ${rp.price ? Number(rp.price).toFixed(2) : 'N/A'}
                                         </Typography>
                                     </Box>
                                 );
