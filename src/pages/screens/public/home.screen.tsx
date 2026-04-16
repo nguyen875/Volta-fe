@@ -18,7 +18,6 @@ import { ProductBadge } from '../../../apis/products/product.enum';
 import type { Bundle } from '../../../apis/bundles/bundle.interface';
 import { VButton } from '../../../common/components';
 import { useCart } from '../../../common/contexts/cart.context';
-import { isAuthenticated } from '../../../common/utils/auth-session';
 
 const badgeVisual: Record<string, { text: string; bg: string }> = {
     hot: { text: '#e53935', bg: '#ffeaea' },
@@ -41,6 +40,12 @@ const resolveProductImageUrl = (imageUrl?: string): string => {
     const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
     const origin = apiUrl ? new URL(apiUrl, window.location.origin).origin : window.location.origin;
     return `${origin}${imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`}`;
+};
+
+const extractArrayData = <T,>(payload: unknown): T[] => {
+    if (Array.isArray(payload)) return payload as T[];
+    const nested = (payload as { data?: unknown } | undefined)?.data;
+    return Array.isArray(nested) ? (nested as T[]) : [];
 };
 
 function HomeProductCard({ product, onNavigate, onAddToCart }: { product: Product; onNavigate: () => void; onAddToCart: () => void }) {
@@ -189,22 +194,22 @@ export const HomeScreen: React.FC = () => {
 
     const { data: hotProducts, isLoading: hotLoading } = useSWR<Product[]>(
         ['featured', ProductBadge.HOT],
-        () => getFeaturedProducts({ badge: ProductBadge.HOT, limit: 4 }).then((res) => res.data),
+        () => getFeaturedProducts({ badge: ProductBadge.HOT, limit: 4 }).then((res) => extractArrayData<Product>(res.data)),
     );
 
     const { data: saleProducts, isLoading: saleLoading } = useSWR<Product[]>(
         ['featured', ProductBadge.SALE],
-        () => getFeaturedProducts({ badge: ProductBadge.SALE, limit: 4 }).then((res) => res.data),
+        () => getFeaturedProducts({ badge: ProductBadge.SALE, limit: 4 }).then((res) => extractArrayData<Product>(res.data)),
     );
 
     const { data: newProducts, isLoading: newLoading } = useSWR<Product[]>(
         ['featured', ProductBadge.NEW],
-        () => getFeaturedProducts({ badge: ProductBadge.NEW, limit: 4 }).then((res) => res.data),
+        () => getFeaturedProducts({ badge: ProductBadge.NEW, limit: 4 }).then((res) => extractArrayData<Product>(res.data)),
     );
 
     const { data: bundles, isLoading: bundleLoading } = useSWR<Bundle[]>(
         ['bundles-active'],
-        () => getActiveBundles().then((res) => res.data),
+        () => getActiveBundles().then((res) => extractArrayData<Bundle>(res.data)),
     );
 
     const { data: availableProducts, isLoading: availableLoading } = useSWR<Product[]>(
@@ -239,20 +244,11 @@ export const HomeScreen: React.FC = () => {
     };
 
     const handleAddToCart = async (product: Product) => {
-        if (!isAuthenticated()) {
-            navigate('/login');
-            return;
-        }
         await addToCart({ product_id: product.id, quantity: 1 });
     };
 
     const handleAddBundleToCart = async (bundle: Bundle) => {
-        if (!isAuthenticated()) {
-            navigate('/login');
-            return;
-        }
-        // Add bundle as a cart item using the bundle ID as product_id
-        await addToCart({ product_id: bundle.id, quantity: 1 });
+        await addToCart({ item_type: 'bundle', bundle_id: bundle.id, quantity: 1 });
     };
 
     return (

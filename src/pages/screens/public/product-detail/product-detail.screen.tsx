@@ -16,7 +16,6 @@ import { ProductRelationType } from '../../../../apis/products/product.enum';
 import { VButton } from '../../../../common/components';
 import { VBreadcrumb } from '../../../../common/components/VBreadcrumb';
 import { useCart } from '../../../../common/contexts/cart.context';
-import { isAuthenticated } from '../../../../common/utils/auth-session';
 
 const badgeVisual: Record<string, { text: string; bg: string }> = {
     hot: { text: '#e53935', bg: '#ffeaea' },
@@ -49,10 +48,6 @@ export const ProductDetailScreen: React.FC = () => {
     );
 
     const handleAddToCart = async () => {
-        if (!isAuthenticated()) {
-            navigate('/login');
-            return;
-        }
         if (!detail?.product) return;
         await addToCart({ product_id: detail.product.id, quantity: qty });
     };
