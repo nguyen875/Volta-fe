@@ -228,8 +228,9 @@ export const RegisterScreen: React.FC = () => {
                 label="Full name"
                 placeholder="Your full name"
                 value={fullName}
-                onChange={(v) => {
-                  setFullName(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setFullName(value);
                   if (errors.full_name)
                     setErrors((prev) => ({ ...prev, full_name: undefined }));
                 }}
@@ -243,8 +244,9 @@ export const RegisterScreen: React.FC = () => {
                 label="Phone"
                 placeholder="Your phone number"
                 value={phone}
-                onChange={(v) => {
-                  setPhone(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setPhone(value);
                   if (errors.phone)
                     setErrors((prev) => ({ ...prev, phone: undefined }));
                 }}
@@ -258,8 +260,9 @@ export const RegisterScreen: React.FC = () => {
                 label="Email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(v) => {
-                  setEmail(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setEmail(value);
                   if (errors.email)
                     setErrors((prev) => ({ ...prev, email: undefined }));
                 }}
@@ -273,8 +276,9 @@ export const RegisterScreen: React.FC = () => {
                 label="Password"
                 placeholder="At least 6 characters"
                 value={password}
-                onChange={(v) => {
-                  setPassword(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setPassword(value);
                   if (errors.password)
                     setErrors((prev) => ({ ...prev, password: undefined }));
                 }}
@@ -288,8 +292,9 @@ export const RegisterScreen: React.FC = () => {
                 label="Confirm password"
                 placeholder="Re-enter password"
                 value={confirmPassword}
-                onChange={(v) => {
-                  setConfirmPassword(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setConfirmPassword(value);
                   if (errors.confirm_password)
                     setErrors((prev) => ({
                       ...prev,

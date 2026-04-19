@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import {
+  Autocomplete,
   Box,
   Chip,
   CircularProgress,
@@ -10,6 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { COLOR_BRAND } from "../../../common/constants/color.constant";
 import { getShops, getFeaturedProducts } from "../../../apis/shops/shop.api";
 import { getActiveBundles } from "../../../apis/bundles/bundle.api";
@@ -307,16 +309,27 @@ export const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [searchInput, setSearchInput] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearchTerm(searchInput.trim());
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
 
   const { data: searchedProducts, isLoading: searchLoading } = useSWR<
     Product[]
-  >(hasSearched ? ["shop-search", searchTerm] : null, () =>
-    getShops({ search: searchTerm, page: 1, limit: 8 }).then(
+  >(debouncedSearchTerm ? ["shop-search", debouncedSearchTerm] : null, () =>
+    getShops({ search: debouncedSearchTerm, page: 1, limit: 8 }).then(
       (res) => res.data.data,
     ),
   );
+
+  const searchSuggestions = useMemo(() => {
+    const names = (searchedProducts ?? []).map((p) => p.name).filter(Boolean);
+    return Array.from(new Set(names)).slice(0, 6);
+  }, [searchedProducts]);
 
   const { data: hotProducts, isLoading: hotLoading } = useSWR<Product[]>(
     ["featured", ProductBadge.HOT],
@@ -374,11 +387,6 @@ export const HomeScreen: React.FC = () => {
     [ProductBadge.NEW]: newLoading,
   };
 
-  const runSearch = () => {
-    setSearchTerm(searchInput.trim());
-    setHasSearched(true);
-  };
-
   const handleAddToCart = async (product: Product) => {
     await addToCart({ product_id: product.id, quantity: 1 });
   };
@@ -424,46 +432,64 @@ export const HomeScreen: React.FC = () => {
             to gear, we have it all.
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 1.5, maxWidth: 480 }}>
-            <TextField
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") runSearch();
+          <Box sx={{ maxWidth: 480 }}>
+            <Autocomplete
+              freeSolo
+              options={searchSuggestions}
+              inputValue={searchInput}
+              onInputChange={(_e, value) => setSearchInput(value)}
+              onChange={(_e, value) => {
+                if (typeof value === "string") setSearchInput(value);
               }}
-              placeholder="Search products..."
-              size="small"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start" sx={{ color: "#999" }}>
-                      {"Q"}
-                    </InputAdornment>
-                  ),
-                },
-              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Search products..."
+                  size="small"
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      startAdornment: (
+                        <>
+                          <InputAdornment
+                            position="start"
+                            sx={{ color: "#999" }}
+                          >
+                            <SearchIcon sx={{ fontSize: 18 }} />
+                          </InputAdornment>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ),
+                    },
+                  }}
+                  sx={{
+                    flex: 1,
+                    "& .MuiOutlinedInput-root": {
+                      bgcolor: "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                      borderRadius: "10px",
+                      "& fieldset": {
+                        borderColor: "rgba(255,255,255,0.15)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255,255,255,0.3)",
+                      },
+                    },
+                    "& input::placeholder": {
+                      color: "rgba(255,255,255,0.4)",
+                    },
+                  }}
+                />
+              )}
               sx={{
-                flex: 1,
-                "& .MuiOutlinedInput-root": {
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  color: "#fff",
+                "& .MuiAutocomplete-paper": {
                   borderRadius: "10px",
-                  "& fieldset": { borderColor: "rgba(255,255,255,0.15)" },
-                  "&:hover fieldset": { borderColor: "rgba(255,255,255,0.3)" },
                 },
-                "& input::placeholder": { color: "rgba(255,255,255,0.4)" },
               }}
             />
-            <VButton
-              variant="secondary"
-              onClick={runSearch}
-              sx={{ borderRadius: "10px" }}
-            >
-              Search
-            </VButton>
           </Box>
 
-          {hasSearched && (
+          {debouncedSearchTerm && (
             <Box sx={{ mt: 2 }}>
               {searchLoading ? (
                 <CircularProgress
@@ -482,7 +508,7 @@ export const HomeScreen: React.FC = () => {
         </Box>
 
         {/* Search results */}
-        {hasSearched &&
+        {debouncedSearchTerm &&
           !searchLoading &&
           (searchedProducts ?? []).length > 0 && (
             <Box sx={{ mb: 5 }}>

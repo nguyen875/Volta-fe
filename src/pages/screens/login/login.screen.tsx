@@ -257,8 +257,9 @@ export const LoginScreen: React.FC = () => {
                 label="Email"
                 placeholder="you@company.com"
                 value={email}
-                onChange={(v) => {
-                  setEmail(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setEmail(value);
                   if (errors.email)
                     setErrors((prev) => ({ ...prev, email: undefined }));
                 }}
@@ -272,8 +273,9 @@ export const LoginScreen: React.FC = () => {
                 label="Password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(v) => {
-                  setPassword(String(v ?? ""));
+                onChange={(e) => {
+                  const value = typeof e === 'object' && e.target ? e.target.value : String(e ?? "");
+                  setPassword(value);
                   if (errors.password)
                     setErrors((prev) => ({ ...prev, password: undefined }));
                 }}

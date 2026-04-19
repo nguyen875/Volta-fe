@@ -2,22 +2,34 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import {
+  Autocomplete,
   Box,
   Container,
-  Typography,
-  Select,
+  InputAdornment,
   MenuItem,
   Pagination,
+  Select,
   Slider,
-  CircularProgress,
   Chip,
+  CircularProgress,
+  TextField,
+  Typography,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { getShops, getShopCategories } from "../../../../apis/shops/shop.api";
 import type { Product } from "../../../../apis/products/product.interface";
 import type { Category } from "../../../../apis/categories/category.interface";
 import { VButton } from "../../../../common/components";
 import { VBreadcrumb } from "../../../../common/components/VBreadcrumb";
 import { useCart } from "../../../../common/contexts/cart.context";
+
+const RECENT_VIEWED_KEY = "shop-recent-viewed-products";
+const MAX_RECENT_VIEWED = 4;
+
+type RecentViewedProduct = Pick<
+  Product,
+  "id" | "name" | "price" | "stock" | "badge" | "image_url"
+>;
 
 const badgeVisual: Record<string, { text: string; bg: string }> = {
   hot: { text: "#e53935", bg: "#ffeaea" },
@@ -43,7 +55,17 @@ export const ShopScreen: React.FC = () => {
   const [categoryId, setCategoryId] = useState<number | "">("");
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
+  const [recentViewed, setRecentViewed] = useState<RecentViewedProduct[]>([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const limit = 12;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearchTerm(searchInput.trim());
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
 
   const { data: categories } = useSWR<Category[]>("shop-categories", () =>
     getShopCategories().then(
@@ -52,23 +74,47 @@ export const ShopScreen: React.FC = () => {
   );
 
   const { data: shopRes, isLoading } = useSWR(
-    ["shop-products", page, categoryId, sortBy],
+    ["shop-products", page, categoryId, sortBy, debouncedSearchTerm],
     () =>
       getShops({
-        search: "",
+        search: debouncedSearchTerm,
         page,
         limit,
         category_id: categoryId || undefined,
       }).then((r) => r.data),
   );
 
+  const { data: suggestionRes } = useSWR(
+    debouncedSearchTerm ? ["shop-suggest", debouncedSearchTerm] : null,
+    () =>
+      getShops({
+        search: debouncedSearchTerm,
+        page: 1,
+        limit: 8,
+      }).then((r) => r.data),
+  );
+
   const products: Product[] = shopRes?.data ?? [];
+  const suggestionProducts: Product[] = suggestionRes?.data ?? [];
   const total = shopRes?.pagination?.total ?? 0;
   const totalPages = Math.ceil(total / limit) || 1;
+  const suggestionOptions = Array.from(
+    new Set(suggestionProducts.map((product) => product.name).filter(Boolean)),
+  ).slice(0, 8);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(RECENT_VIEWED_KEY);
+      const parsed = raw ? (JSON.parse(raw) as RecentViewedProduct[]) : [];
+      setRecentViewed(Array.isArray(parsed) ? parsed.slice(0, MAX_RECENT_VIEWED) : []);
+    } catch {
+      setRecentViewed([]);
+    }
+  }, []);
 
   useEffect(() => {
     setPage(1);
-  }, [categoryId, sortBy]);
+  }, [categoryId, sortBy, debouncedSearchTerm]);
 
   const filteredProducts = products.filter(
     (p) => p.price >= priceRange[0] && p.price <= priceRange[1],
@@ -85,6 +131,31 @@ export const ShopScreen: React.FC = () => {
     await addToCart({ product_id: product.id, quantity: 1 });
   };
 
+  const handleViewProduct = (product: Product | RecentViewedProduct) => {
+    const viewed: RecentViewedProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      stock: product.stock,
+      badge: product.badge,
+      image_url: product.image_url,
+    };
+
+    const next = [
+      viewed,
+      ...recentViewed.filter((item) => item.id !== viewed.id),
+    ].slice(0, MAX_RECENT_VIEWED);
+
+    setRecentViewed(next);
+    try {
+      window.localStorage.setItem(RECENT_VIEWED_KEY, JSON.stringify(next));
+    } catch {
+      // Ignore storage write failure (private mode/quota)
+    }
+
+    navigate(`/shop/${product.id}`);
+  };
+
   return (
     <Box sx={{ bgcolor: "#ffffff" }}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -94,26 +165,78 @@ export const ShopScreen: React.FC = () => {
 
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr auto" },
+            alignItems: { xs: "stretch", md: "center" },
+            gap: 2,
             mb: 3,
           }}
         >
-          <Box>
-            <Typography
-              sx={{
-                fontFamily: '"Syne", sans-serif',
-                fontSize: 28,
-                fontWeight: 800,
-                color: "#1a1a1a",
+          <Box sx={{ minWidth: 0 }}>
+            <Box sx={{ mb: 1.5 }}>
+              <Typography
+                sx={{
+                  fontFamily: '"Syne", sans-serif',
+                  fontSize: 28,
+                  fontWeight: 800,
+                  color: "#1a1a1a",
+                }}
+              >
+                Shop
+              </Typography>
+              <Typography sx={{ color: "#999", fontSize: 14 }}>
+                Browse our tech collection
+              </Typography>
+            </Box>
+
+            <Autocomplete
+              freeSolo
+              options={suggestionOptions}
+              inputValue={searchInput}
+              onInputChange={(_e, value) => setSearchInput(value)}
+              onChange={(_e, value) => {
+                if (typeof value === "string") setSearchInput(value);
               }}
-            >
-              Shop
-            </Typography>
-            <Typography sx={{ color: "#999", fontSize: 14 }}>
-              Browse our tech collection
-            </Typography>
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  placeholder="Search products..."
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      startAdornment: (
+                        <>
+                          <InputAdornment
+                            position="start"
+                            sx={{ color: "#8e8e8e" }}
+                          >
+                            <SearchIcon sx={{ fontSize: 18 }} />
+                          </InputAdornment>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ),
+                    },
+                  }}
+                  sx={{
+                    maxWidth: 420,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                      fontSize: 13,
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#e8e8e8",
+                      },
+                    },
+                  }}
+                />
+              )}
+              sx={{
+                maxWidth: 420,
+                "& .MuiAutocomplete-paper": {
+                  borderRadius: "10px",
+                },
+              }}
+            />
           </Box>
           <Select
             value={sortBy}
@@ -132,6 +255,123 @@ export const ShopScreen: React.FC = () => {
             <MenuItem value="name">Name A-Z</MenuItem>
           </Select>
         </Box>
+
+        {categoryId === "" && recentViewed.length > 0 && (
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              sx={{
+                fontFamily: '"Syne", sans-serif',
+                fontSize: 18,
+                fontWeight: 800,
+                color: "#1a1a1a",
+                mb: 0.5,
+              }}
+            >
+              Recently Viewed
+            </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(4, 1fr)",
+                },
+                gap: 1.5,
+              }}
+            >
+              {recentViewed.map((product) => {
+                const style = badgeVisual[product.badge] ?? badgeVisual.none;
+                const hasBadge = product.badge !== "none";
+                const imageSrc = resolveProductImageUrl(product.image_url);
+                return (
+                  <Box
+                    key={`recent-${product.id}`}
+                    onClick={() => handleViewProduct(product)}
+                    sx={{
+                      borderRadius: "12px",
+                      border: hasBadge
+                        ? `1px solid ${style.text}`
+                        : "1px solid #ececec",
+                      bgcolor: "#fff",
+                      overflow: "hidden",
+                      cursor: "pointer",
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        height: 110,
+                        bgcolor: "#fafafa",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                        position: "relative",
+                      }}
+                    >
+                      {hasBadge && (
+                        <Chip
+                          label={product.badge.toUpperCase()}
+                          size="small"
+                          sx={{
+                            bgcolor: style.bg,
+                            color: style.text,
+                            fontSize: 9,
+                            fontWeight: 700,
+                            height: 22,
+                            position: "absolute",
+                            top: 6,
+                            right: 6,
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
+                      {imageSrc ? (
+                        <Box
+                          component="img"
+                          src={imageSrc}
+                          alt={product.name}
+                          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <Typography sx={{ color: "#bbb", fontSize: 12 }}>
+                          {product.name}
+                        </Typography>
+                      )}
+                    </Box>
+                    <Box sx={{ p: 1.25 }}>
+                      <Typography
+                        sx={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#1a1a1a",
+                          lineHeight: 1.3,
+                          mb: 0.5,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {product.name}
+                      </Typography>
+                      <Typography sx={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>
+                        ${Number(product.price).toFixed(2)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        )}
 
         <Box sx={{ display: "flex", gap: 4 }}>
           {/* Sidebar filters */}
@@ -304,7 +544,7 @@ export const ShopScreen: React.FC = () => {
                           />
                         )}
                         <Box
-                          onClick={() => navigate(`/shop/${product.id}`)}
+                          onClick={() => handleViewProduct(product)}
                           sx={{
                             height: 180,
                             bgcolor: "#fafafa",
@@ -337,7 +577,7 @@ export const ShopScreen: React.FC = () => {
                         </Box>
                         <Box sx={{ p: 2 }}>
                           <Typography
-                            onClick={() => navigate(`/shop/${product.id}`)}
+                            onClick={() => handleViewProduct(product)}
                             sx={{
                               fontWeight: 600,
                               fontSize: 14,
